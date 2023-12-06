@@ -30,7 +30,7 @@ st.write(st.session_state.workout_data)
 # Fitness goals
 st.header('Fitness Goals')
 goal_duration = st.sidebar.number_input('Set Exercise Duration Goal (minutes)')
-current_total_duration = st.session_state.workout_data['Duration (min)'].sum()
+current_total_duration = st.session_state.workout_data['Duration (min)'].sum() if 'Duration (min)' in st.session_state.workout_data.columns else 0
 progress_percentage = (current_total_duration / goal_duration) * 100 if goal_duration != 0 else 0
 
 st.write(f'Current Total Duration: {current_total_duration} minutes')
@@ -42,8 +42,7 @@ st.header('Fitness Statistics')
 if st.sidebar.button('Visualize Data'):
     if not st.session_state.workout_data.empty:
         plt.figure(figsize=(8, 6))
-        df['Date'] = pd.to_datetime(df['Date'])
-        df.set_index('Date', inplace=True)
-        df.resample('D').sum().plot(kind='bar', title='Workout Duration Over Time')
+        st.session_state.workout_data['Date'] = pd.to_datetime(st.session_state.workout_data['Date'])
+        st.session_state.workout_data.set_index('Date', inplace=True)
+        st.session_state.workout_data.resample('D').sum().plot(kind='bar', title='Workout Duration Over Time')
         st.pyplot()
-
